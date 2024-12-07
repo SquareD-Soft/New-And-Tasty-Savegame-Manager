@@ -29,7 +29,7 @@ A simple **savegame manager** for *Oddworld: New 'n' Tasty*. This tool allows yo
 2. **Running the `.exe`**:  
    - **Recommended**: Run the `.exe` file to run the program directly. No additional software required.
 3. **Alternatively: Running the `.ahk` file**:  
-   - To run the `.ahk` file, you need to have [AutoHotkey v1.1+](https://www.autohotkey.com/download/) installed on your system.
+   - If you prefer to run the script as an AutoHotkey file, you need to have [AutoHotkey v1.1+](https://www.autohotkey.com/download/) installed on your system.
 
 ---
 
@@ -60,5 +60,5 @@ By default, the following hotkeys are available:
 
 ## File Structure  
 - **cfg/**: Contains the configuration file (`config.ini`).  
-- **save backups/**: Default folder for storing backups.  
+- **savegame backups/**: Default folder for storing backups.  
 
