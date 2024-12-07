@@ -22,14 +22,14 @@ A simple **savegame manager** for *Oddworld: New 'n' Tasty*. This tool allows yo
 
 ## Installation  
 
-## Installation  
-
-1. **Download**:  
-   - Download the latest version, which includes both the `.exe` file and the `.ahk` script, and extract them to a folder.
-2. **Running the `.exe`**:  
-   - **Recommended**: Run the `.exe` file to run the program directly. No additional software required.
-3. **Alternatively: Running the `.ahk` file**:  
-   - If you prefer to run the script as an AutoHotkey file, you need to have [AutoHotkey v1.1+](https://www.autohotkey.com/download/) installed on your system.
+1. **Download the script or release**:  
+   - **Recommended**: Download the precompiled `.exe` file from the [Releases page](#). This does not require any additional software.  
+   - Alternatively: Download the `.ahk` file and place it in a dedicated folder.  
+2. **Requirements (for the .ahk file)**:  
+   - Install [AutoHotkey v1.1+](https://www.autohotkey.com/download/) if it is not already installed on your system.  
+3. **Run the script**:  
+   - Simply run the `.ahk` file to execute it.  
+   - Alternatively, you can use the AutoHotkey compiler to convert the `.ahk` file into a standalone `.exe`.  
 
 ---
 
