@@ -13,12 +13,11 @@ sound_length := 150
 ; =================================================================
 
 configlocation := "cfg\config.ini"
-
-FileCreateDir, cfg
-FileCreateDir, save backups
+if(!fileexist(configlocation))
+configlocation := "config.ini"
 
 iniread, location_savegame, %configlocation%, info, location_savegame, 0
-iniread, location_backup, %configlocation%, info, location_backup, %A_ScriptDir%\save backups
+iniread, location_backup, %configlocation%, info, location_backup, %A_ScriptDir%\savegame backups
 iniread, backupNameStyle, %configlocation%, settings, backupNameStyle, NNTSaveBackup
 iniread, hotkey_createBackup, %configlocation%, settings, hotkey_createBackup, F9
 iniread, checkbox_playsound, %configlocation%, settings, playSound, 1
