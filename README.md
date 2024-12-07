@@ -22,8 +22,6 @@ A simple **savegame manager** for *Oddworld: New 'n' Tasty*. This tool allows yo
 
 ## Installation  
 
-## Installation  
-
 1. **Download the script or release**:  
    - **Recommended**: Download the precompiled `.exe` file from the [Releases page](#). This does not require any additional software.  
    - Alternatively: Download the `SavegameManager.ahk` file and place it in a dedicated folder.  
