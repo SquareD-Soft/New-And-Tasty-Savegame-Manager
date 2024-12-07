@@ -21,13 +21,17 @@ A simple **savegame manager** for *Oddworld: New 'n' Tasty*. This tool allows yo
 ---
 
 ## Installation  
-1. **Download the script**: Clone this repository or download the `SavegameManager.ahk` file.  
-2. **Run the script**:  
-   - Double-click the `SavegameManager.ahk` file to run it.  
-   - Alternatively, compile the script to an `.exe` using AutoHotkey's compiler for standalone usage.  
-3. **Configure your settings**:  
-   - When you run the script for the first time, it will create a configuration file (`cfg/config.ini`).  
-   - You can modify this file or adjust settings in the GUI.  
+
+## Installation  
+
+1. **Download the script or release**:  
+   - **Recommended**: Download the precompiled `.exe` file from the [Releases page](#). This does not require any additional software.  
+   - Alternatively: Download the `SavegameManager.ahk` file and place it in a dedicated folder.  
+2. **Requirements (for the .ahk file)**:  
+   - Install [AutoHotkey v1.1+](https://www.autohotkey.com/download/) if it is not already installed on your system.  
+3. **Run the script**:  
+   - Double-click the `SavegameManager.ahk` file to execute it.  
+   - Alternatively, you can use the AutoHotkey compiler to convert the `.ahk` file into a standalone `.exe`.  
 
 ---
 
@@ -58,16 +62,3 @@ By default, the following hotkeys are available:
 - **cfg/**: Contains the configuration file (`config.ini`).  
 - **save backups/**: Default folder for storing backups.  
 
----
-
-## Example Configuration (`cfg/config.ini`)  
-
-```ini
-[info]
-location_savegame=C:\Path\To\Savegame\Folder
-location_backup=C:\Path\To\Backup\Folder
-
-[settings]
-backupNameStyle=NNTSaveBackup
-hotkey_createBackup=F9
-playSound=1
