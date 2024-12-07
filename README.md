@@ -23,7 +23,7 @@ A simple **savegame manager** for *Oddworld: New 'n' Tasty*. This tool allows yo
 ## Installation  
 
 1. **Download the script or release**:  
-   - **Recommended**: Download the precompiled `.exe` file from the [Releases page](#). This does not require any additional software.  
+   - **Recommended**: Download the precompiled `.exe` file from the [Releases page](https://github.com/SquareD-Soft/New-And-Tasty-Savegame-Manager/releases). This does not require any additional software.  
    - Alternatively: Download the `.ahk` file and place it in a dedicated folder.  
 2. **Requirements (for the .ahk file)**:  
    - Install [AutoHotkey v1.1+](https://www.autohotkey.com/download/) if it is not already installed on your system.  
