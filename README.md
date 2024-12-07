@@ -43,8 +43,10 @@ By default, the following hotkeys are available:
   *(You can change this in the settings GUI.)*  
 
 ### Backup Creation  
-- Click **"Create Backup"** in the main GUI or use the configured hotkey.  
-- The backup will be saved in the specified backup location.  
+- Backups can only be created once a valid savegame path is detected.
+- If the savegame path is not set at startup, the program will automatically detect it once the game is started while the program is running.
+- Once the savegame path is available, click "Create Backup" in the main GUI or use the configured hotkey to create a backup.
+- The backup will be saved in the specified backup location.
 
 ### Backup Restoration  
 1. Select a backup from the list in the GUI.  
