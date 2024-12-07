@@ -37,11 +37,6 @@ A simple **savegame manager** for *Oddworld: New 'n' Tasty*. This tool allows yo
 
 ## Usage  
 
-### Hotkeys  
-By default, the following hotkeys are available:  
-- **F9**: Create a new backup.  
-  *(You can change this in the settings GUI.)*  
-
 ### Backup Creation  
 - Backups can only be created once a valid savegame path is detected.
 - If the savegame path is not set at startup, the program will automatically detect it once the game is started while the program is running.
@@ -52,7 +47,12 @@ By default, the following hotkeys are available:
 1. Select a backup from the list in the GUI.  
 2. Click **"Load Backup"**.  
 3. Confirm the action in the popup window.  
-4. The savegame will be replaced with the selected backup.  
+4. The savegame will be replaced with the selected backup.
+
+### Hotkeys  
+By default, the following hotkeys are available:  
+- **F9**: Create a new backup.  
+  *(You can change this in the settings GUI.)*  
 
 ### Settings  
 - Access the settings via the **"Settings"** button in the main GUI.  
