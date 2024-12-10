@@ -49,7 +49,7 @@ A simple **savegame manager** for *Oddworld: New 'n' Tasty*. This tool allows yo
 
 ### Hotkeys  
 By default, the following hotkeys are available:  
-- **F9**: Create a new backup.  
+- **F3**: Create a new backup.  
   *(You can change this in the settings GUI.)*  
 
 ### Settings  
