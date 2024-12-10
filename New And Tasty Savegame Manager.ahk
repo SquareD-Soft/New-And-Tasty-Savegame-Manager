@@ -115,7 +115,6 @@ LV_ModifyCol(3, columwidth_backupDate)
 LV_ModifyCol(4, 0)
 LV_ModifyCol(4, "Integer")
 
-
 sortstatus_folderName := 0
 sortstatus_dateCreated := 0
 
