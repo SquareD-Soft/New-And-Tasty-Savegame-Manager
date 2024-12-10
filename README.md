@@ -8,11 +8,11 @@ A simple **savegame manager** for *Oddworld: New 'n' Tasty*. This tool allows yo
 
 ## Features    
 - **Backup Creation**: Create organized backups with a custom naming style.  
-- **Backup Restoration**: Easily restore savegames from the list of backups.  
+- **Backup Restoration**: Easily restore savegames from the list of backups.
+- **Backup Organization**: For each backup, a new folder is created that includes the save slot file and all related save slots.
 - **User Configurable**:  
   - Define custom hotkeys for creating backups.  
   - Enable/disable sound notifications.  
-- **Backup Organization**: For each backup, a new folder is created that includes the save slot file and all related save slots.
 
 ---
 
