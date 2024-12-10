@@ -13,7 +13,7 @@ sound_length := 150
 ; =================================================================
 
 configlocation := "cfg\config.ini"
-if(!fileexist(configlocation))
+if(!fileexist("cfg"))
 configlocation := "config.ini"
 
 iniread, location_savegame, %configlocation%, Info, location_savegame, 0
