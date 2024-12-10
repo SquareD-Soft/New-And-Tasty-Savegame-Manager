@@ -24,13 +24,12 @@ A simple **savegame manager** for *Oddworld: New 'n' Tasty*. This tool allows yo
 ## Installation  
 
 1. **Download the script or release**:  
-   - Download the files from the [Releases page](https://github.com/SquareD-Soft/New-And-Tasty-Savegame-Manager/releases). This does not require any additional software.  
-   - Alternatively, download the `.ahk` file and place it in a dedicated folder.  
+   - Download the files from the [Releases page](https://github.com/SquareD-Soft/New-And-Tasty-Savegame-Manager/releases).
 2. **Requirements (for the .ahk file)**:  
    - Install [AutoHotkey v1.1](https://www.autohotkey.com/) if it is not already installed on your system.  
 3. **Run the script**:  
    - Simply run the `.ahk` file to execute it.  
-   - For `.ahk` files, ensure AutoHotkey is installed, then run the `.ahk` file to execute it. Alternatively, you can compile the `.ahk` script into a standalone `.exe` using AutoHotkey.
+   - Alternatively, you can compile the `.ahk` script into a standalone `.exe` using AutoHotkey.
 
 ---
 
