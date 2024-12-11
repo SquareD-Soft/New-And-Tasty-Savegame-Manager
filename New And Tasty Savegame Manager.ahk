@@ -8,9 +8,9 @@ sound_pitch := 400
 sound_length := 150
 
 
-; =================================================================
-; Load app config and locations ===================================
-; =================================================================
+; =================================================================================
+; Load app config and locations ===================================================
+; =================================================================================
 
 configlocation := "cfg\config.ini"
 if(!fileexist("cfg"))
@@ -46,10 +46,15 @@ if (location_savegame = 0 or !fileexist(location_savegame))
 		SplitPath, gamelocation_exe ,, gamelocation
 	}
 
-	if (fileexist(gamelocation "\savegame\SaveSlotData.NnT"))
+	if(fileexist(gamelocation))
 	{
 		Loop, Files, %gamelocation%\savegame\* , D
-		location_savegame := A_LoopFileFullPath
+		location_savegame_pre := A_LoopFileFullPath
+	}
+
+	if (fileexist( "\SaveSlotData.NnT"))
+	{
+		location_savegame := location_savegame_pre
 		Iniwrite, %location_savegame%, %configlocation%, Info, location_savegame
 	}
 	else
@@ -62,9 +67,9 @@ errormessage_location_savegame := "Savegame location not found!`n`nStart the gam
 errormessage_location_backup := "Backup location not found!`n`nPlease set a valid location in the settings and`nmake sure the selected folder exists!"
 
 
-; =================================================================
-; Style ===========================================================
-; =================================================================
+; =================================================================================
+; Style ===========================================================================
+; =================================================================================
 
 mainGuiW := 570
 mainGuiH := 800
@@ -90,9 +95,9 @@ settingsGuiEditW := settingsGuiW - (settingsGuiW / 3)
 settingsGuiEditH := 42
 
 
-; =================================================================
-; GUIS ============================================================
-; =================================================================
+; =================================================================================
+; GUIS ============================================================================
+; =================================================================================
 
 ; Main gui ============
 
@@ -149,13 +154,12 @@ refreshlist(3, "SortDesc")
 refreshCurrentSavegameText()
 
 Gui, mainGui: show, w%mainGuiW% h%mainGuiH% x%mainGuiX% y%mainGuiY%, %wintitle%
-
 return
 
 
-; =================================================================
-; Create backup ===================================================
-; =================================================================
+; =================================================================================
+; Create backup ===================================================================
+; =================================================================================
 
 createBackup_hotkey:
 
@@ -191,7 +195,7 @@ savenumber_next++
 
 FileCreateDir, %location_backup%\%backupNameStyle%%savenumber_next%
 
-Loop, Files, %location_savegame%\*
+Loop, Files, %location_savegame%\*.NnT
 {
 	if(instr(A_LoopFileName, "Settings"))
 	continue
@@ -207,13 +211,12 @@ if (copyError_create != 0)
 }
 
 refreshlist(3, "SortDesc")
-
 return
 
 
-; =================================================================
-; Load backup =====================================================
-; =================================================================
+; =================================================================================
+; Load backup =====================================================================
+; =================================================================================
 
 loadBackup:
 
@@ -263,7 +266,7 @@ Ifmsgbox Yes
 {
 	copyError_load := 0
 	FileCreateDir, %location_backup%\AdditionalBackup
-	Loop, Files, %location_savegame%\*
+	Loop, Files, %location_savegame%\*.NnT
 	{
 		if(instr(A_LoopFileName, "Settings"))
 		continue
@@ -273,7 +276,7 @@ Ifmsgbox Yes
 		copyError_load := 1
 	}
 
-	Loop, Files, %location_backup%\%backupToLoad%\*
+	Loop, Files, %location_backup%\%backupToLoad%\*.NnT
 	{
 		if(instr(A_LoopFileName, "Settings"))
 		continue
@@ -291,13 +294,12 @@ Ifmsgbox Yes
 }
 
 refreshCurrentSavegameText()
-
 return
 
 
-; =================================================================
-; Refresh savegame list ===========================================
-; =================================================================
+; =================================================================================
+; Refresh savegame list ===========================================================
+; =================================================================================
 
 refreshlist(columnToSort, order)
 {
@@ -310,18 +312,9 @@ refreshlist(columnToSort, order)
 	{
 		if (A_LoopFileName = "AdditionalBackup")
 		continue
-		
-		validcheck := 0
 
-		Loop, Files, %location_backup%\%A_LoopFileName%\*
-		{
-			if (A_LoopFileName = "SaveSlotData.NnT")
-			{
-				validcheck := 1
-				break
-			}
-		}
-		
+		validcheck := checkLocation(location_backup "\" A_LoopFileName)
+	
 		if (validcheck = 1)
 		{
 			backupNumber := strreplace(A_LoopFileName, backupNameStyle, "")
@@ -337,9 +330,9 @@ refreshlist(columnToSort, order)
 }
 
 
-; =================================================================
-; Check for game process ==========================================
-; =================================================================
+; =================================================================================
+; Check for game process ==========================================================
+; =================================================================================
 
 gameProcessCheck:
 
@@ -362,13 +355,12 @@ if (fileexist(gamelocation "\savegame\"))
 	Guicontrol, settingsGui:, edit_location_savegame, %location_savegame%
 	refreshCurrentSavegameText()
 }
-
 return
 
 
-; =================================================================
-; Handle list event ===============================================
-; =================================================================
+; =================================================================================
+; Handle list event ===============================================================
+; =================================================================================
 
 listEvent:
 
@@ -407,29 +399,44 @@ if ((A_EventInfo = 2 or A_EventInfo = 3) and A_GuiEvent = "colclick")
 {
 	sortstatus_folderName := 0
 }
-
 return
 
 
-; =================================================================
-; Change filepaths ================================================
-; =================================================================
+; =================================================================================
+; Change filepaths ================================================================
+; =================================================================================
 
 changeLocation_savegame:
 
 Gui, settingsGui:+OwnDialogs
-
 dirwindowname := "Select savegame location"
+
 FileSelectFolder, filechoose_savegame ,*%location_savegame%,, %dirwindowname%
 
 if (ErrorLevel = 0 and fileexist(filechoose_savegame))
 {
-	location_savegame := filechoose_savegame
-	Guicontrol, settingsGui:, edit_location_savegame, %location_savegame%
-	Iniwrite, %location_savegame%, %configlocation%, Info, location_savegame
-	refreshCurrentSavegameText()
-}
+	SplitPath, filechoose_savegame, filechoose_savegame_foldername
+	
+	if (filechoose_savegame_foldername = "SaveGame")
+	{
+		Loop, Files, %filechoose_savegame%\* , D
+		filechoose_savegame := A_LoopFileFullPath
+	}
 
+	validcheck := checkLocation(filechoose_savegame)
+
+	if(validcheck = 1)
+	{
+		location_savegame := filechoose_savegame
+		Guicontrol, settingsGui:, edit_location_savegame, %location_savegame%
+		Iniwrite, %location_savegame%, %configlocation%, Info, location_savegame
+		refreshCurrentSavegameText()
+	}
+	else
+	{
+		msgbox, 48, ERROR, The selected filepath does not contain any savegame data! Please choose a valid filepath!
+	}
+}
 return
 
 
@@ -447,67 +454,12 @@ if (ErrorLevel = 0 and fileexist(filechoose_backup))
 	Iniwrite, %location_backup%, %configlocation%, Info, location_backup
 	backupLocationChanged := 1
 }
-
 return
 
 
-; =================================================================
-; Misc ============================================================
-; =================================================================
-
-; Format time ============
-
-formatTime_dmyhm(time_unformated)
-{
-	FormatTime, time_formated , %time_unformated%, dd.MM.yy | HH:mm
-	return time_formated
-}
-
-
-; Refresh current savegame text ============
-
-refreshCurrentSavegameText()
-{
-	global location_savegame
-	if (fileexist(location_savegame "\SaveSlotData.NnT"))
-	{
-		FileGetTime, lastchanged , %location_savegame%\SaveSlotData.NnT, M
-		date_formated := formatTime_dmyhm(lastchanged)
-		Guicontrol, mainGui:, text_currentSave, %date_formated%
-	}
-}
-
-
-; Open savegame location ============
-
-open_savegameLocation:
-
-if (fileexist(location_savegame) and A_GuiEvent = "DoubleClick")
-run, %location_savegame%
-return
-
-
-; Change checkbox: Enable hotkey ============
-
-changeCheckbox_enableHotkey:
-Gui, settingsGui: submit, nohide
-Iniwrite, %checkbox_enableHotkey%, %configlocation%, Settings, enableHotkey
-
-if (checkbox_enableHotkey = 0)
-hotkey, %hotkey_createBackup%, off
-
-return
-
-
-; Change checkbox: Play sound ============
-
-changeCheckbox_playSound:
-Gui, settingsGui: submit, nohide
-Iniwrite, %checkbox_playSound%, %configlocation%, Settings, playSound
-return
-
-
-; Show settings gui============
+; =================================================================================
+; Show settings gui ===============================================================
+; =================================================================================
 
 showSettings:
 
@@ -518,11 +470,14 @@ settingsX := winX
 settingsY := winY + 40
 backupLocationChanged := 0
 GuiControl, settingsGui:, edit_hotkey, %hotkey_createBackup%
+GuiControl, settingsGui:, edit_location_backup, %location_backup%
 Gui, settingsGui: show, w%settingsGuiW% h%settingsGuiH% x%settingsX% y%settingsY%, Settings
 return
 
 
-; Handle settings gui close ============
+; =================================================================================
+; Handle settings gui close =======================================================
+; =================================================================================
 
 SettingsguiGuiClose:
 
@@ -555,7 +510,76 @@ if (backupLocationChanged = 1)
 
 if (checkbox_enableHotkey = 1 and hotkey_createBackup)
 hotkey, %hotkey_createBackup%, on
+return
 
+
+
+
+; =================================================================================
+; Misc ============================================================================
+; =================================================================================
+
+; Format time ============
+
+formatTime_dmyhm(time_unformated)
+{
+	FormatTime, time_formated , %time_unformated%, dd.MM.yy | HH:mm
+	return time_formated
+}
+
+
+; Refresh current savegame text ============
+
+refreshCurrentSavegameText()
+{
+	global location_savegame
+	if (fileexist(location_savegame "\SaveSlotData.NnT"))
+	{
+		FileGetTime, lastchanged , %location_savegame%\SaveSlotData.NnT, M
+		date_formated := formatTime_dmyhm(lastchanged)
+		Guicontrol, mainGui:, text_currentSave, %date_formated%
+	}
+}
+
+
+; Check if location is valid ============
+
+checkLocation(location)
+{
+	isValid := 0
+
+	if (fileexist(location "\SaveSlotData.NnT"))
+	isValid := 1
+
+	return isValid
+}
+
+
+; Open savegame location ============
+
+open_savegameLocation:
+
+if (fileexist(location_savegame) and A_GuiEvent = "DoubleClick")
+run, %location_savegame%
+return
+
+
+; Change checkbox: Enable hotkey ============
+
+changeCheckbox_enableHotkey:
+Gui, settingsGui: submit, nohide
+Iniwrite, %checkbox_enableHotkey%, %configlocation%, Settings, enableHotkey
+
+if (checkbox_enableHotkey = 0)
+hotkey, %hotkey_createBackup%, off
+return
+
+
+; Change checkbox: Play sound ============
+
+changeCheckbox_playSound:
+Gui, settingsGui: submit, nohide
+Iniwrite, %checkbox_playSound%, %configlocation%, Settings, playSound
 return
 
 
