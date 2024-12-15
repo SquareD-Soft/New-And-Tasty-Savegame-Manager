@@ -23,6 +23,8 @@ iniread, hotkey_createBackup, %configlocation%, Settings, hotkey_createBackup, F
 iniread, checkbox_enableHotkey, %configlocation%, Settings, enableHotkey, 1
 iniread, checkbox_playSound, %configlocation%, Settings, playSound, 1
 
+iniread, devmodeactive, %configlocation%, Info, devmodeactive, 0
+
 if (location_backup = A_ScriptDir "\savegame backups" and !fileexist(A_ScriptDir "\savegame backups"))
 location_backup := A_ScriptDir
 
@@ -65,6 +67,7 @@ if (location_savegame = 0 or !fileexist(location_savegame))
 
 errormessage_location_savegame := "Savegame location not found!`n`nStart the game to automatically detect and set`nthe location, or set it manually in the settings."
 errormessage_location_backup := "Backup location not found!`n`nPlease set a valid location in the settings and`nmake sure the selected folder exists!"
+errormessage_location_backupFile := "Backup file not found!`nPlease make sure the selected backup folder exists!"
 
 
 ; =================================================================================
@@ -110,10 +113,10 @@ Gui, mainGui: add, button, vbutton_createBackup gcreateBackup  w130 h45 x20 y25,
 Gui, mainGui: add, button, vbutton_loadBackup gloadBackup x+40 yp w130 h45 disabled, Load Backup
 Gui, mainGui: add, button, gshowSettings x%settingsButtonX% yp w%settingsButtonW% h45 , Settings
 
-Gui, mainGui: add, text, gopen_savegameLocation x20 y+30, Current Savegame Modified: 
-Gui, mainGui: add, text, vtext_currentSave gopen_savegameLocation x+20 w200 yp, -
+Gui, mainGui: add, text, vtext_currentSave_pre gopen_savegameLocation x20 y+35 w250, Active Savegame - Last Modified:
+Gui, mainGui: add, text, vtext_currentSave gopen_savegameLocation x+0 w200 yp, -
 
-Gui, mainGui: add, listView, vsavegameList glistEvent -Multi altsubmit x0 y%listY% w%mainGuiW% h%listH%,Foldername|Savegame Modified|Backup Time| #
+Gui, mainGui: add, listView, vsavegameList glistEvent -Multi altsubmit x0 y%listY% w%mainGuiW% h%listH%,Foldername|Savegame Modified|Backup Time|#
 LV_ModifyCol(1, columwidth_foldername)
 LV_ModifyCol(2, columwidth_savegameDate)
 LV_ModifyCol(3, columwidth_backupDate)
@@ -168,15 +171,20 @@ SoundBeep, %sound_pitch%, %sound_length%
 
 createBackup:
 
+Guicontrol, mainGui: disable, button_createBackup
+Guicontrol, mainGui: disable, button_loadBackup
+
 if (!fileexist(location_savegame))
 {
 	msgbox, 48, ERROR, %errormessage_location_savegame%
+	Guicontrol, mainGui: enable, button_createBackup
 	return
 }
 
 if(!fileexist(location_backup))
 {
 	msgbox, 48, ERROR, %errormessage_location_backup%
+	Guicontrol, mainGui: enable, button_createBackup
 	return
 }
 
@@ -207,10 +215,14 @@ Loop, Files, %location_savegame%\*.NnT
 if (copyError_create != 0) 
 {
 	msgbox, 48, ERROR, Failed to create backup!`n`nOne or more files could not be copied!
+	Guicontrol, mainGui: enable, button_createBackup
 	return
 }
 
 refreshlist(3, "SortDesc")
+
+Guicontrol, mainGui: enable, button_createBackup
+
 return
 
 
@@ -220,21 +232,39 @@ return
 
 loadBackup:
 
+GuiControlGet, buttonWasEnabled, Enabled , button_loadBackup
+Guicontrol, mainGui: disable, button_loadBackup
+
+rowNumber := LV_GetNext(0, F)
+LV_GetText(backupToLoad, RowNumber , 1)
+LV_GetText(savegameDate, RowNumber , 2)
+LV_GetText(backupDate, RowNumber , 3)
+
 if (winexist("ahk_exe NNT.exe"))
 {
 	msgbox, 64,	Info, Game is still running. Please close the game first!
+	Guicontrol, mainGui: enable, button_loadBackup
 	return
 }
 
 if (!fileexist(location_savegame))
 {
 	msgbox, 48,	ERROR, %errormessage_location_savegame%
+	Guicontrol, mainGui: enable, button_loadBackup
+	return
+}
+
+if (!fileexist(location_backup "\" backupToLoad))
+{
+	msgbox, 48,	ERROR, %errormessage_location_backupFile%
+	Guicontrol, mainGui: enable, button_loadBackup
 	return
 }
 
 if(!fileexist(location_backup))
 {
 	msgbox, 48,	ERROR, %errormessage_location_backup%
+	Guicontrol, mainGui: enable, button_loadBackup
 	return
 }
 
@@ -242,9 +272,6 @@ rowNumber := LV_GetNext(0, F)
 if (rowNumber < 1)
 return
 
-LV_GetText(backupToLoad, RowNumber , 1)
-LV_GetText(savegameDate, RowNumber , 2)
-LV_GetText(backupDate, RowNumber , 3)
 
 msgboxtext=
 (
@@ -289,11 +316,14 @@ Ifmsgbox Yes
 	if (copyError_load != 0) 
 	{
 		msgbox, 48, ERROR, Failed to load backup!`n`nOne or more files could not be copied!
+		Guicontrol, mainGui: enable, button_loadBackup
 		return
 	}
 }
 
 refreshCurrentSavegameText()
+gosub, flashLastModified
+Guicontrol, mainGui: enable, button_loadBackup
 return
 
 
@@ -366,7 +396,7 @@ listEvent:
 
 rowNumber := LV_GetNext(0, F)
 
-if (rowNumber >= 1 and fileexist(location_savegame) and fileexist(location_backup))
+if (rowNumber >= 1)
 Guicontrol, mainGui: enable, button_loadBackup
 
 if (rowNumber < 1)
@@ -555,6 +585,25 @@ checkLocation(location)
 }
 
 
+flashLastModified:
+if(flashStatus != 1)
+{
+	flashStatus := 1
+	Gui, mainGui: font, s11 c7BFF00, arial
+	Guicontrol,mainGui: font, text_currentSave
+	Guicontrol,mainGui: font, text_currentSave_pre
+	settimer, flashLastModified, -750
+}
+else
+{
+	flashStatus := 0
+	Gui, mainGui: font, s11 cE1E1E1 normal, arial
+	Guicontrol,mainGui: font, text_currentSave
+	Guicontrol,mainGui: font, text_currentSave_pre
+}
+
+return
+
 ; Open savegame location ============
 
 open_savegameLocation:
@@ -594,4 +643,12 @@ return
 
 ^+f10::
 ListVars
+return
+
+
+; Hotkey: Reload script ============
+
+#if (devmodeactive = 1)
+^4::
+reload
 return
